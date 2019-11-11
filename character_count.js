@@ -7,8 +7,8 @@ OUTPUT: [1, 0, 2] for each %2 == 0 => 'fizz', forEach %5 ==0 => 'buzz' */
 
 function characterCount(string) {
   //Workaround: can't find the lenght of null (when there's 0 of [aA] so I'm adding here 'a' one and substracting after 1 from the length)
-  var arr = string.split('; ').map(function (str) {
-    if (str.match(/[bB]/g)) { //First I did != null but then I figured out I can take advantage of falsy expressions. Is that fine?
+  var arr = string.split('; ').map(str => str + 'b').map(function (str) {
+    if (str.match(/[bB]/g).length == 2) {
       return str + '?';
     } else {
       return str;
@@ -24,8 +24,16 @@ function characterCount(string) {
                         });
 
   var res = arr.map(str => applyRules(str));
-  //I had a hard time outputing arr in one line and then res in the next one so I put it into the array. Hope that You don't mind. BTW how do I return it not using an array?
-  return [arr, res]
+  var resq = []
+  for (i = 0; i < res.length; i++){
+    if (arr[i].toString().match(/\?/g)){
+      resq.push(res[i] + '?');
+    } else {
+      resq.push(res[i]);
+    }
+  }
+  //I had a hard time outputing arr in one line and then res in the next one so I put it into the array. Hope that You don't mind. BTW how do I return it not using an array? For example return arr and resq in two separate lines?
+  return [arr, resq]
 }
 
 /*Why does the program show "ReferenceError: rules is not defined" when I change the order of rules and applyRules? Is it possible to declare
@@ -33,11 +41,11 @@ function characterCount(string) {
 
 let rules = [
   {
-    condition: str => str % 2 == 0,
+    condition: str => parseInt(str) % 2 == 0,
     result: "Fizz"
   },
   {
-    condition: str => str % 5 == 0,
+    condition: str => parseInt(str) % 5 == 0,
     result: "Buzz"
   },
   {
@@ -53,4 +61,6 @@ function applyRules(str) {
     .reduce((acc, cur) => acc + cur);
 }
 
-console.log(characterCount("abc; def; AaB; aaaAA"));
+module.exports = characterCount;
+
+console.log(characterCount("abc; aAde; AaB; aaaAA"));
